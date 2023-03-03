@@ -31,16 +31,16 @@
   pub fn get_reading(raw_resp:String, adjust:bool) -> PurpleReading{
 
     // Convert Raw Response to JSON
-    let sensor_response = json::parse(&raw_resp).expect("Invalid Sensor Response").remove("sensor");
+    let sensor_response = json::parse(&raw_resp).expect("Invalid Sensor Response");
 
     // Assemble vectors for struct from components of the raw JSON response
-    let mut atmo_sen_vec = parse_response(&sensor_response, vec![String::from("humidity_a"),String::from("temperature_a"),String::from("pressure_a")]);
-    let pm_sen_a_vec = parse_response(&sensor_response, vec![String::from("pm1.0_a"), String::from("pm2.5_a"), String::from("pm10.0_a")]);
-    let pm_sen_b_vec = parse_response(&sensor_response, vec![String::from("pm1.0_b"), String::from("pm2.5_b"), String::from("pm10.0_b")]);
-    let ct_sen_a_vec = parse_response(&sensor_response, vec![String::from("0.3_um_count_a"), String::from("0.5_um_count_a"),
-        String::from("1.0_um_count_a"), String::from("2.5_um_count_a"), String::from("5.0_um_count_a"), String::from("10.0_um_count_a")]);
-    let ct_sen_b_vec = parse_response(&sensor_response, vec![String::from("0.3_um_count_b"), String::from("0.5_um_count_b"),
-        String::from("1.0_um_count_b"), String::from("2.5_um_count_b"), String::from("5.0_um_count_b"), String::from("10.0_um_count_b")]);
+    let mut atmo_sen_vec = parse_response(&sensor_response, vec![String::from("current_humidity"),String::from("current_temp_f"),String::from("pressure")]);
+    let pm_sen_a_vec = parse_response(&sensor_response, vec![String::from("pm1_0_atm"), String::from("pm2_5_atm"), String::from("pm10_0_atm")]);
+    let pm_sen_b_vec = parse_response(&sensor_response, vec![String::from("pm1_0_atm_b"), String::from("pm2_5_atm_b"), String::from("pm10_0_atm_b")]);
+    let ct_sen_a_vec = parse_response(&sensor_response, vec![String::from("p_0_3_um"), String::from("p_0_5_um"),
+        String::from("p_1_0_um"), String::from("p_2_5_um"), String::from("p_5_0_um"), String::from("p_10_0_um")]);
+    let ct_sen_b_vec = parse_response(&sensor_response, vec![String::from("p_0_3_um_b"), String::from("p_0_5_um_b"),
+        String::from("p_1_0_um_b"), String::from("p_2_5_um_b"), String::from("p_5_0_um_b"), String::from("p_10_0_um_b")]);
 
     // Apply adjustments to temperature and humidity if requested
     if adjust {

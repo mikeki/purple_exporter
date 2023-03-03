@@ -20,10 +20,6 @@ fn main() {
 
     pretty_env_logger::init();
 
-    // Build Headers
-    let mut headers = header::HeaderMap::new();
-    headers.insert("X-API-Key", header::HeaderValue::from_str(&config.read_key).unwrap());
-
     // Build Client
     let client = Client::builder()
         .default_headers(headers)
@@ -33,7 +29,7 @@ fn main() {
     let purple_exporter = purple_exporter::start_exporter(&config.port);
 
     // Build URL used in GETs
-    let url_string = "https://api.purpleair.com/v1/sensors/".to_owned() + &config.sensor_id;
+    let url_string = &config.sensor_ip + "/json".to_owned();
 
     loop{
         info!("Requesting update for Sensor.");
