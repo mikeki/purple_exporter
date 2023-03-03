@@ -3,3 +3,6 @@
 
 # Local Testing Environment File
 .env.local
+
+# IDE
+.idea
