@@ -70,7 +70,7 @@ fn config_from_args() -> Config{
   // Set up configuration items
   let port_string = args.value_of("port").unwrap_or("9184");
   let adjust_flag = value_t!(args, "adjust", bool).unwrap_or(false);
-  let mut request_rate = value_t!(args, "rate", u64).unwrap_or(300);
+  let request_rate = value_t!(args, "rate", u64).unwrap_or(300);
   let sensor_ip = args.value_of("sensor").expect("Invalid or missing Sensor Index");
 
   let config = Config{

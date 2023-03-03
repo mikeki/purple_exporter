@@ -1,7 +1,6 @@
 extern crate pretty_env_logger;
 #[macro_use] extern crate log;
 
-use reqwest::header;
 use reqwest::blocking::Client;
 use url::Url;
 
@@ -22,14 +21,13 @@ fn main() {
 
     // Build Client
     let client = Client::builder()
-        .default_headers(headers)
         .build().unwrap();
 
     // Start exporter
     let purple_exporter = purple_exporter::start_exporter(&config.port);
 
     // Build URL used in GETs
-    let url_string = &config.sensor_ip + "/json".to_owned();
+    let url_string = "http://".to_owned() + &config.sensor_ip + &"/json";
 
     loop{
         info!("Requesting update for Sensor.");
