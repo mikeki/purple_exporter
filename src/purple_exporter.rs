@@ -10,6 +10,10 @@ lazy_static! {
     static ref TEMPERATURE: Gauge = register_gauge!("Temperature", "Temperature Measured at the Sensor").unwrap();
     static ref PRESSURE: Gauge = register_gauge!("Pressure", "Pressure Measured at the Sensor").unwrap();
 
+    // Air Quality
+    static ref AQIA: Gauge = register_gauge!("PM_2_5_AQI_A", "Sensor A AQI Calculated at the Sensor").unwrap();
+    static ref AQIB: Gauge = register_gauge!("PM_2_5_AQI_B", "Sensor B AQI Calculated at the Sensor").unwrap();
+
     // Particle Concentrations
     static ref MASS1A: Gauge = register_gauge!("PM_1_0_A", "Sensor A Estimated Concentration of Particles Less than 1 micron in diameter (ug/m^3)").unwrap();
     static ref MASS1B: Gauge = register_gauge!("PM_1_0_B", "Sensor B Estimated Concentration of Particles Less than 1 micron in diameter (ug/m^3)").unwrap();
@@ -55,6 +59,10 @@ pub fn update_metrics(reading: PurpleReading){
     HUMIDITY.set(reading.atmo_sen_a[0].into());
     TEMPERATURE.set(reading.atmo_sen_a[1].into());
     PRESSURE.set(reading.atmo_sen_a[2].into());
+
+    // Air Quality
+    AQIA.set(reading.aqi[0].into());
+    AQIB.set(reading.aqi[1].into());
 
     // Update Mass Concentrations
     MASS1A.set(reading.pm_sen_a[0].into());

@@ -4,6 +4,9 @@
   /// * `atmo_sen_a[0]` -- Humidity
   /// * `atmo_sen_a[1]` -- Temperature
   /// * `atmo_sen_a[2]` -- Air Pressure
+  /// # Air Quality
+  /// * `aqi[0]` -- Air Quality Index at Sensor A
+  /// * `aqi[1]` -- Air Quality Index at Sensor B
   /// # Particle Concentration - Sensors A and B
   /// * `pm_sen_a[0]` -- Concentration of particles no larger than 1 micron in diameter
   /// * `pm_sen_a[1]` -- Concentration of particles no larger than 2.5 microns in diameter
@@ -17,6 +20,7 @@
   /// * `ct_sen_a[5]` -- Count of particles no lager than 10.0 microns in diameter
   pub struct PurpleReading{
     pub atmo_sen_a: Vec<f32>,
+    pub aqi: Vec<f32>,
     pub pm_sen_a: Vec<f32>,
     pub pm_sen_b: Vec<f32>,
     pub ct_sen_a: Vec<f32>,
@@ -35,6 +39,7 @@
 
     // Assemble vectors for struct from components of the raw JSON response
     let mut atmo_sen_vec = parse_response(&sensor_response, vec![String::from("current_humidity"),String::from("current_temp_f"),String::from("pressure")]);
+    let aqi_vec = parse_response(&sensor_response, vec![String::from("pm2.5_aqi"),String::from("pm2.5_aqi_b")]);
     let pm_sen_a_vec = parse_response(&sensor_response, vec![String::from("pm1_0_atm"), String::from("pm2_5_atm"), String::from("pm10_0_atm")]);
     let pm_sen_b_vec = parse_response(&sensor_response, vec![String::from("pm1_0_atm_b"), String::from("pm2_5_atm_b"), String::from("pm10_0_atm_b")]);
     let ct_sen_a_vec = parse_response(&sensor_response, vec![String::from("p_0_3_um"), String::from("p_0_5_um"),
@@ -51,6 +56,7 @@
     // Convert this response into a proper form
     let reading = PurpleReading{
         atmo_sen_a: atmo_sen_vec,
+        aqi: aqi_vec,
         pm_sen_a: pm_sen_a_vec,
         pm_sen_b: pm_sen_b_vec,
         ct_sen_a: ct_sen_a_vec,
