@@ -8,9 +8,7 @@
 [linter-badge]: https://github.com/viridianforge/purple_exporter/workflows/Lint%20Code%20Base/badge.svg
 [linter-url]: https://github.com/marketplace/actions/super-linter
 
-Exporting metrics from the PurpleAir API for your PurpleAir Sensor.
-
-This is where a link to the latest relase will go.
+Exporting metrics from your local PurpleAir Sensor.
 
 ## Table of Contents
 
@@ -21,20 +19,20 @@ This is where a link to the latest relase will go.
         2. [Estimated Mass Concentrations](#estimated-mass-concentrations)
         3. [Particle Concentrations](#particle-concentrations)
 3. [Building Purple Exporter](#building-purple-exporter)
-    1. [Getting an API Key](#getting-an-api-key)
+    1. [Getting the IP address](#getting-the-ip-address)
     2. [Building from Source](#building-from-source)
     3. [Building Docker Image](#building-docker-image)
 4. [Required Configuration](#required-configuration)
     1. [Sensor Index](#sensor-index)
-    2. [API Read Key](#api-read-key)
-    3. [Request Rate](#request-rate)
-    4. [Network Port](#network-port)
-    5. [Environmental Adjustment](#environmental-adjustment)
-    6. [Log Level](log-level)
+    2. [Request Rate](#request-rate)
+    3. [Network Port](#network-port)
+    4. [Environmental Adjustment](#environmental-adjustment)
+    5. [Log Level](log-level)
 5. [Running Purple Exporter](#running-purple-exporter)
     1. [Running from Source](#running-from-source)
     2. [Running from Executable](#running-from-executable)
     3. [Running from Docker](#running-from-docker)
+    4. [Running from Docker-compose](#running-from-docker-compose)
 6. [Grafana](#grafana)
 7. [Testing](#testing)
 8. [License](#license)
@@ -46,9 +44,9 @@ purple_exporter is a Prometheus exporter that exports a subset of available
 information from a single
 [PAII Purple Air Sensor](https://www2.purpleair.com/products/purpleair-pa-ii).
 
-This project was developed so I could pipe the information from my own PAII
-sensor to a grafana chart I run in my house. In the future, I may expand the
-usability of this exporter to other PA sensors, or ranges of sensors.
+This project was developed by [ViridianForge](https://github.com/ViridianForge/purple_exporter] could)
+to pipe the information from his own PAII sensor to a grafana chart.
+[mikeki](https://github.com/mikeki/purple_exporter) forked the project in 2023 to fetch directly from the local device.
 
 ## Technical Details
 
@@ -61,6 +59,7 @@ Metrics are collected from all sensors for which they are available.
 - Humidity: Relative humidity in the sensor chamber, on average, 4% lower than ambient humidity
 - Temperature: Temperature in the sensor chamber in Farenheit, on average 8F higher than ambient temperature
 - Air Pressure: Current pressure in millibars
+- AQI: Calculated Air Quality Index provided by the PAII sensor.
 
 #### Estimated Mass Concentrations
 
@@ -79,13 +78,10 @@ Metrics are collected from all sensors for which they are available.
 
 ## Building Purple Exporter
 
-### Getting an API Key
+### Getting the IP address
 
-In order to use the exporter, one will need a PurpleAir API key. This can be
-obtained by e-mailing [contact@purpleair.com](mailto:contact@purpleair.com).
-Approved applications will receive a read key, and a write key. This exporter
-only makes use of the read key to retrieve information from the specified
-sensor.
+In order to use the exporter, one will need to have network access from the machine running the exporter
+to the PAII sensor, and know the IP address of the sensor.
 
 ### Building From Source
 
@@ -107,21 +103,14 @@ variable, or command line argument.
 
 ### Sensor Index
 
-Set with the `SENSOR_ID` environment variable, or the `-s` flag.
-This value is the unique index assigned by PurpleAir to the sensor that readings
+Set with the `SENSOR_IP` environment variable, or the `-s` flag.
+This value is the IP address assigned by your Router to the PurpleAir sensor that readings
 will be drawn from.
-
-### API Read Key
-
-Set with the `READ_KEY` environment variable, or the `-x` flag.
-This is one of the two API keys PurpleAir will furnish when following the above
-directions.
 
 ### Request Rate
 
 Set with the `REQUEST_RATE` environment variable, or the `-r` flag.
-This is how often to query the purple air API, in seconds. This will
-default to a minimum of once every 300 seconds (5 minutes).
+This is how often to query the purple air API, in seconds.
 
 ### Network Port
 
@@ -158,6 +147,23 @@ or by setting environment variables.
 `docker run --env-file .env <image>`
 
 An example environment variable file is provided in `.env.example`.
+
+### Running from Docker-compose
+
+```
+version: "3.9":
+services:
+  purple-exporter:
+    image: miguelcervera/purple_exporter:latest
+    restart: always
+    ports:
+      - "9420:9420"
+    environment:
+      - REQUEST_RATE=15
+      - PORT=9420
+      - SENSOR_IP=<IP_ADDRESS_OF_YOUR_PAII_SENSOR>
+      - ADJUST=true
+```
 
 ## Grafana
 
